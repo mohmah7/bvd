@@ -72,12 +72,12 @@ def deploy(*args,**kwargs):
 		install_requirements(remote=True)
 
 	api.run('%(python)s %(syncdb)s' % dict(
-		python = '%s/bin/python' % (virtualenv_dir)
+		python = '%s/bin/python' % (virtualenv_dir),
 		syncdb = syncdb 
 		)
 
 	api.run('%(python)s %(collectstatic)s' % dict(
-		python = '%s/bin/python' % (virtualenv_dir)
+		python = '%s/bin/python' % (virtualenv_dir),
 		collectstatic = collectstatic 
 		)
 
