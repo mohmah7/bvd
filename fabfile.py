@@ -14,8 +14,6 @@ deploy_dir = '/opt/django/bvd'
 
 proj_dir = '%s/current/srv/bvd' % deploy_dir
 
-virtualenv_dir = '%s/.virtualenvs/bvd' % home_dir
-
 host = 'webiken.net'
 
 git_clone = 'git clone https://github.com/webiken/bvd.git'
@@ -26,6 +24,10 @@ syncdb = '%s/manage.py sync_db --noinput' % proj_dir
 
 api.env.hosts = [host]
 api.env.user = deploy_user
+
+home_dir = os.environ.get('HOME')
+
+virtualenv_dir = '%s/.virtualenvs/bvd' % home_dir
 	
 
 def deploy(*args,**kwargs):
@@ -33,6 +35,8 @@ def deploy(*args,**kwargs):
 	args = dict([(k,True) for k in args] + kwargs.items())
 
 	home_dir = api.run('echo $HOME')
+
+	virtualenv_dir = '%s/.virtualenvs/bvd' % home_dir
 
 	with api.cd('%s' % deploy_dir):
 		now = datetime.now()
