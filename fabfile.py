@@ -92,6 +92,10 @@ def install_requirements(*args,**kwargs):
 	install = '%s/bin/pip install -r requirements.txt' % (virtualenv_dir)
 
 	if remote:
+		home_dir = api.run('echo $HOME')
+		virtualenv_dir = '%s/.virtualenvs/bvd' % home_dir
 		api.run('%(install)s' % dict(install=install))
 	else:
+		home_dir = os.environ.get('HOME')
+		virtualenv_dir = '%s/.virtualenvs/bvd' % home_dir
 		api.local('%(install)s' % dict(install = install))
