@@ -141,6 +141,8 @@ body {
 	
     color: white;
     text-shadow: 1px 1px 1px black;
+    -moz-box-shadow: 1px 1px 1px black;
+    -webikit-box-shadow: 1px 1px 1px black;
 	background-color: #6BC231;
 	
 	background-size: 128px 128px;
@@ -163,12 +165,20 @@ body {
         
     color: white;
     text-shadow: 1px 1px 1px black;
+    -moz-box-shadow: 1px 1px 1px black;
+    -webikit-box-shadow: 1px 1px 1px black;
 	background-color: #FF4234;
 	-webkit-animation-name: blink;
 	-webkit-animation-duration: 1s;
 	-webkit-animation-iteration-count: infinite;
 	-webkit-animation-direction: normal;
 	-webkit-animation-timing-function: ease;
+
+	-moz-animation-name: blink;
+	-moz-animation-duration: 1s;
+	-moz-animation-iteration-count: infinite;
+	-moz-animation-direction: normal;
+	-moz-animation-timing-function: ease;
 	background-image: url(../images/x6.png);
 	background-repeat:no-repeat;
 	background-position:center;
@@ -178,6 +188,8 @@ body {
         
     color: white;
     text-shadow: 1px 1px 1px black;
+    -moz-box-shadow: 1px 1px 1px black;
+    -webikit-box-shadow: 1px 1px 1px black;
     background-color: #A9A9A9;
 }
 
@@ -217,6 +229,18 @@ body {
         }
         to {
                 -webkit-box-shadow:0 -1px 10px rgba(175,100,90, 0.5), 0 -1px 20px rgba(175,100,90, 1);
+        }
+}
+
+@-moz-keyframes blink {
+        from {
+                -moz-box-shadow:0 -1px 10px rgba(225,100,90, 0.5), 0 -1px 20px rgba(225,100,90, 1);
+        }
+        50%{
+                -moz-box-shadow:0 -1px 10px rgba(199,58,58, 0.5), 0 -1px 20px rgba(199,58,58, 0.5);
+        }
+        to {
+                -moz-box-shadow:0 -1px 10px rgba(175,100,90, 0.5), 0 -1px 20px rgba(175,100,90, 1);
         }
 }
 

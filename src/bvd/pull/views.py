@@ -32,7 +32,7 @@ from django.shortcuts import render_to_response
 from django.template import RequestContext
 from django.utils import simplejson
 from django.http import HttpResponse, HttpResponseRedirect
-from django.conf import settings
+from bvd import settings
 from django.core.exceptions import ObjectDoesNotExist
 from django.contrib.auth import authenticate, login as django_login, logout as django_logout
 from django.contrib.auth.models import User
@@ -347,7 +347,8 @@ def pull_jobs(request, *args, **kwargs):
 
             if result == urllib2.HTTPError:
                 jenkins = RetrieveJob(job['hostname'],job['jobname'])
-                result = jenkins.lookup_job(settings.jenkins_user, settings.jenkins_pass)
+                result = jenkins.lookup_job(True, settings.jenkins_user, settings.jenkins_pass)
+
             
             if result == urllib2.URLError:
                 #TODO: add an additional state other than down 
