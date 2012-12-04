@@ -6,8 +6,6 @@ from datetime import datetime
 from fabric import api
 from fabric import operations
 
-home_dir = os.environ.get('HOME')
-
 extra_index_url = 'http://webiken.net:9090/packages'
 
 deploy_user = 'django'
@@ -33,6 +31,8 @@ api.env.user = deploy_user
 def deploy(*args,**kwargs):
 	
 	args = dict([(k,True) for k in args] + kwargs.items())
+
+	home_dir = api.run('echo $HOME')
 
 	with api.cd('%s' % deploy_dir):
 		now = datetime.now()
