@@ -74,12 +74,12 @@ def deploy(*args,**kwargs):
 	api.run('%(python)s %(syncdb)s' % dict(
 		python = '%s/bin/python' % (virtualenv_dir),
 		syncdb = syncdb 
-		)
+		))
 
 	api.run('%(python)s %(collectstatic)s' % dict(
 		python = '%s/bin/python' % (virtualenv_dir),
 		collectstatic = collectstatic 
-		)
+		))
 
 	if args.get('restart'):
 		operations.sudo('service apache2 restart', user='admin')
