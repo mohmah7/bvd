@@ -127,8 +127,11 @@ def home(request,template='index.html'):
     else:
         readonly = False
     if not request.user.is_authenticated():
-        jobs = []
-        pass
+        user = authenticate(username='django',password='django')
+        if user and user.is_active:
+            django_login(request,user)
+            jobs = get_jobs_for_user(request.user,readonly)
+        
     else:
         jobs = models.UserCiJob.objects.filter(entity_active=True,user__username=request.user.username)
         for job in jobs:
