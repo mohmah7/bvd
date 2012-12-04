@@ -141,8 +141,8 @@ INSTALLED_APPS = (
     'django.contrib.staticfiles',
     'django_openid_auth',
     'django.contrib.admin',
-	'pull',
-	'jenkins',
+	'bvd.pull',
+	'bvd.jenkins',
     'south',
     #'django_auth_ldap',
 	
