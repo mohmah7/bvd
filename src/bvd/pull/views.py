@@ -344,10 +344,15 @@ def pull_jobs(request, *args, **kwargs):
         for job in list:
             jenkins = RetrieveJob(job['hostname'],job['jobname'])
             result = jenkins.lookup_job()
+
+            if result == urllib2.HTTPError:
+                jenkins = RetrieveJob(job['hostname'],job['jobname'])
+                result = jenkins.lookup_job(settings.jenkins_user, settings.jenkins_pass)
             
             if result == urllib2.URLError:
                 #TODO: add an additional state other than down 
                 job['status'] = "DOWN"
+
             elif result == ValueError:
                 #TODO: add an additional state other than down
                 job['status'] = "DOWN"
