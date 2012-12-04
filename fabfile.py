@@ -12,7 +12,7 @@ deploy_user = 'django'
 
 deploy_dir = '/opt/django/bvd'
 
-proj_dir = '%s/current/srv/bvd' % deploy_dir
+proj_dir = '%s/current/src/bvd' % deploy_dir
 
 host = 'webiken.net'
 
@@ -20,7 +20,7 @@ git_clone = 'git clone https://github.com/webiken/bvd.git'
 
 collect_static = '%s/manage.py collectstatic --noinput' % proj_dir
 
-syncdb = '%s/manage.py sync_db --noinput' % proj_dir
+syncdb = '%s/manage.py syncdb --noinput' % proj_dir
 
 api.env.hosts = [host]
 api.env.user = deploy_user
@@ -71,8 +71,15 @@ def deploy(*args,**kwargs):
 	with api.cd('%s/current' % deploy_dir):
 		install_requirements(remote=True)
 
-	api.run(syncdb)
-	api.run(collectstatic)
+	api.run('%(python)s %(syncdb)s' % dict(
+		python = '%s/bin/python' % (virtualenv_dir)
+		syncdb = syncdb 
+		)
+
+	api.run('%(python)s %(collectstatic)s' % dict(
+		python = '%s/bin/python' % (virtualenv_dir)
+		collectstatic = collectstatic 
+		)
 
 	if args.get('restart'):
 		operations.sudo('service apache2 restart', user='admin')
