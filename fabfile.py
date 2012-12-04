@@ -1,89 +1,93 @@
-"""
-BVD v1.0
+from __future__ import with_statement
 
-Copyright (c) 2012 Voltage Security
-All rights reserved.
-
-Redistribution and use in source and binary forms, with or without
-modification, are permitted provided that the following conditions
-are met:
-1. Redistributions of source code must retain the above copyright
-   notice, this list of conditions and the following disclaimer.
-2. Redistributions in binary form must reproduce the above copyright
-   notice, this list of conditions and the following disclaimer in the
-   documentation and/or other materials provided with the distribution.
-3. The name of the author may not be used to endorse or promote products
-   derived from this software without specific prior written permission.
-
-THIS SOFTWARE IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS OR
-IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
-OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
-IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT,
-INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT
-NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
-DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
-THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
-(INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
-THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-"""
-import subprocess, os, types, shlex
-from multiprocessing import Process
+import os, re, sys
+from datetime import datetime
 
 from fabric import api
+from fabric import operations
 
-"""Globals"""
+home_dir = os.environ.get('HOME')
 
-app_name = 'bvd'
-wrapper = '. /usr/local/bin/virtualenvwrapper.sh;'
+extra_index_url = 'http://webiken.net:9090/packages'
+
+deploy_user = 'django'
+
+deploy_dir = '/opt/django/bvd'
+
+proj_dir = '%s/current/srv/bvd' % deploy_dir
+
+virtualenv_dir = '%s/.virtualenvs/bvd' % home_dir
+
+host = 'webiken.net'
+
+git_clone = 'git clone https://github.com/webiken/bvd.git'
+
+collect_static = '%s/manage.py collectstatic --noinput' % proj_dir
+
+syncdb = '%s/manage.py sync_db --noinput' % proj_dir
+
+api.env.hosts = [host]
+api.env.user = deploy_user
+	
+
+def deploy(*args,**kwargs):
+	
+	args = dict([(k,True) for k in args] + kwargs.items())
+
+	with api.cd('%s' % deploy_dir):
+		now = datetime.now()
+		year = now.year
+		dt = now.strftime('%Y-%m-%d_%H:%M:%S')
+
+		mkdir = 'mkdir -p %s/%s' % (deploy_dir,year)
+
+		api.run(mkdir)
+		clone = '%s %s' % (git_clone,dt)
+
+		with api.cd('%s' % year):
+			api.run(clone)
+		
+		rm = 'rm -rf %(root)s/current'
+		link = 'ln -nsf %(root)s/%(year)s/%(dt)s %(root)s/current' % dict(
+			root = deploy_dir,
+			year = year,
+			dt = dt
+		)
+
+		api.run(link)
+
+		settings_ln = 'ln -s %(home_dir)s/settings/bvd/settings.py %(root)s/current/src/bvd/settings.py' % dict(
+				home_dir = home_dir,
+				root = deploy_dir,
+			)
+
+		api.run(settings_ln)
+
+
+	with api.cd('%s/current' % deploy_dir):
+		install_requirements(remote=True)
+
+	api.run(syncdb)
+	api.run(collectstatic)
+
+	if args.get('restart'):
+		operations.sudo('service apache2 restart', user='admin')
+		
+def pypi_mirror_args(args):
+	pypi_mirror = args.get('extra-index-url',None)
+	if not pypi_mirror:
+		return extra_index_url
+	return pypi_mirror
+		
 
 def install_requirements(*args,**kwargs):
-	#TODO: If need be, we can add a local pypi mirror for any additional packages
-	#install = 'pip install -r requirements.txt --extra-index-url %s' % (pypi_mirror)
-	
-	install = 'pip install --upgrade --user -r requirements.txt'
-	
-	if kwargs.get('remote'):
+	args = dict([(k,True) for k in args] + kwargs.items())
+
+	remote = args.get('remote',False)
+
+	install = '%s/bin/pip install -r requirements.txt' % (virtualenv_dir)
+
+	if remote:
 		api.run('%(install)s' % dict(install=install))
 	else:
-		#check if user
-		
-		
-		#TODO: provide arguments: whether a user wants to use a virtualenv
-		#mkvirtualenv = '%s %s' % (wrapper,'mkvirtualenv %s' % app_name)
-		#workon = '%s %s' % (wrapper,'workon %s' % app_name)
-		
-		install = '%s -e %s' % (install, os.getcwd())
-		
-		#cmd = '%s ; %s ; %s' % (mkvirtualenv, workon, install)
-		cmd = install
-		
-		out, err = subprocess.Popen(cmd,shell=True).communicate()
-		
-def start_django_dev_server(*args,**kwargs):
-	cmd = 'cd ./src/bvd && python manage.py runserver 0.0.0.0:8000'
-	
-	subprocess.call(cmd, shell=True)
-	
-	print 'CI Monitor is running under http://localhost:8000'
-
-def sync_db(*args,**kwargs):
-	cmd = 'cd ./src/bvd && python manage.py syncdb --noinput'
-	subprocess.call(cmd,shell=True)
-	
-def local(*args,**kwargs):
-	"""
-		Main function to be run for local development.  Function installs requirements, then starts the django dev server.
-		
-		Before running this function, check to make sure the CI_INSTALLATIONS tuple in settings.py is properly set to your CI servers
-	"""
-	install_requirements()
-	sync_db()
-	start_django_dev_server()
-	
-def ci_build(*args,**kwargs):
-	"""
-		Function to be run by a CI build system.  Function installs requirements, and application to $USER's home directory.
-	"""
-	install_requirements()
-	#TODO: Add Apache config and restart
-	
+		api.local('%(install)s' % dict(install = install))
