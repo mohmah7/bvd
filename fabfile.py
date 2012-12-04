@@ -89,7 +89,8 @@ def deploy(*args,**kwargs):
 		))
 
 	if args.get('restart'):
-		operations.sudo('service apache2 restart', user='admin')
+		api.env.user = 'admin'
+		operations.sudo('service apache2 restart')
 		
 def pypi_mirror_args(args):
 	pypi_mirror = args.get('extra-index-url',None)
