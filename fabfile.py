@@ -18,9 +18,11 @@ host = 'webiken.net'
 
 git_clone = 'git clone https://github.com/webiken/bvd.git'
 
-collect_static = '%s/manage.py collectstatic --noinput' % proj_dir
+collectstatic = '%s/manage.py collectstatic --noinput' % proj_dir
 
 syncdb = '%s/manage.py syncdb --noinput' % proj_dir
+
+migrate = '%s/manage.py migrate' % proj_dir
 
 api.env.hosts = [host]
 api.env.user = deploy_user
@@ -74,6 +76,11 @@ def deploy(*args,**kwargs):
 	api.run('%(python)s %(syncdb)s' % dict(
 		python = '%s/bin/python' % (virtualenv_dir),
 		syncdb = syncdb 
+		))
+
+	api.run('%(python)s %(migrate)s' % dict(
+		python = '%s/bin/python' % (virtualenv_dir),
+		migrate = migrate 
 		))
 
 	api.run('%(python)s %(collectstatic)s' % dict(
