@@ -130,7 +130,7 @@ def home(request,template='index.html'):
         user = authenticate(username='django',password='django')
         if user and user.is_active:
             django_login(request,user)
-            jobs = get_jobs_for_user(request.user,readonly)
+            jobs = models.UserCiJob.objects.filter(entity_active=True,user__username=request.user.username)
         
     else:
         jobs = models.UserCiJob.objects.filter(entity_active=True,user__username=request.user.username)
