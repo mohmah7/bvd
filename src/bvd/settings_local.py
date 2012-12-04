@@ -32,8 +32,6 @@ DEBUG = True
 USE_SSL = False
 TEMPLATE_DEBUG = DEBUG
 
-MANAGERS = ADMINS
-
 
 DATABASES = {
     'default': {
