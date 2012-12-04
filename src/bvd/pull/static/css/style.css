@@ -142,7 +142,7 @@ body {
     color: white;
     text-shadow: 1px 1px 1px black;
     -moz-box-shadow: 1px 1px 1px black;
-    -webikit-box-shadow: 1px 1px 1px black;
+    -webkit-box-shadow: 1px 1px 1px black;
 	background-color: #6BC231;
 	
 	background-size: 128px 128px;
@@ -166,7 +166,7 @@ body {
     color: white;
     text-shadow: 1px 1px 1px black;
     -moz-box-shadow: 1px 1px 1px black;
-    -webikit-box-shadow: 1px 1px 1px black;
+    -webkit-box-shadow: 1px 1px 1px black;
 	background-color: #FF4234;
 	-webkit-animation-name: blink;
 	-webkit-animation-duration: 1s;
@@ -189,7 +189,7 @@ body {
     color: white;
     text-shadow: 1px 1px 1px black;
     -moz-box-shadow: 1px 1px 1px black;
-    -webikit-box-shadow: 1px 1px 1px black;
+    -webkit-box-shadow: 1px 1px 1px black;
     background-color: #A9A9A9;
 }
 

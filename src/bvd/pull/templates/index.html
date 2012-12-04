@@ -58,6 +58,7 @@ div.button {
 		</script>
 	{%for job in jobs%}
 		<script>
+		$(function(){
 			var count = $("#widgets").children().length;
 
 			$widget = new Widget('{{job.ci_job.ci_server.hostname}}', '{{job.ci_job.jobname}}', '{{job.displayname}}', '{{job.ci_job.status}}', '{{job.pk}}', count, readonly, '{{job.icon}}');
@@ -69,6 +70,7 @@ div.button {
 				$widgets = [$widget];
 				BVD.widget_map['{{job.ci_job.ci_server.hostname}}'] = $widgets; 
 			}
+		});
 		</script>
 	{%endfor%}
 </div>
