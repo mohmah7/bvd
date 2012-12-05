@@ -374,7 +374,9 @@
             // The iframe transport accepts a serialized array as form data:
             options.formData = this._getFormData(options);
 
-            //options.headers['X-CSRFToken'] = $("input[name='csrfmiddlewaretoken']").val();
+            options.headers = options.headers || {};
+            
+            options.headers['X-CSRFToken'] = $("input[name='csrfmiddlewaretoken']").val();
 
             // Add redirect url to form data on cross-domain uploads:
             if (options.redirect && $('<a></a>').prop('href', options.url)
