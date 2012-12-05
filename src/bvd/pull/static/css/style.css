@@ -124,7 +124,7 @@ body {
 	padding: 10px;
 	margin: 7px;
 	overflow: hidden;
-	margin-top: 1.8em;
+	margin-top: 2.8em;
     font-size: 25pt;
     font-weight: bold;
 	text-align:center;
@@ -151,7 +151,7 @@ body {
 }
 
 .icon {
-	float:right;
+	float:left;
 	background-image: url(../images/gear-icon.png);
 	background-repeat:no-repeat;
     background-position:center;
@@ -173,6 +173,12 @@ body {
 	-webkit-animation-iteration-count: infinite;
 	-webkit-animation-direction: normal;
 	-webkit-animation-timing-function: ease;
+
+    animation-name: blink;
+    animation-duration: 1s;
+    animation-iteration-count: infinite;
+    animation-direction: normal;
+    animation-timing-function: ease;
 
 	-moz-animation-name: blink;
 	-moz-animation-duration: 1s;
@@ -241,6 +247,18 @@ body {
         }
         to {
                 -moz-box-shadow:0 -1px 10px rgba(175,100,90, 0.5), 0 -1px 20px rgba(175,100,90, 1);
+        }
+}
+
+@keyframes blink {
+        from {
+                -ms-box-shadow:0 -1px 10px rgba(225,100,90, 0.5), 0 -1px 20px rgba(225,100,90, 1);
+        }
+        50%{
+                -ms-box-shadow:0 -1px 10px rgba(199,58,58, 0.5), 0 -1px 20px rgba(199,58,58, 0.5);
+        }
+        to {
+                -sm-box-shadow:0 -1px 10px rgba(175,100,90, 0.5), 0 -1px 20px rgba(175,100,90, 1);
         }
 }
 

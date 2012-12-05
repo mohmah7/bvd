@@ -32,7 +32,7 @@ from django.shortcuts import render_to_response
 from django.template import RequestContext
 from django.utils import simplejson
 from django.http import HttpResponse, HttpResponseRedirect
-from bvd import settings
+from django.conf import settings
 from django.core.exceptions import ObjectDoesNotExist
 from django.contrib.auth import authenticate, login as django_login, logout as django_logout
 from django.contrib.auth.models import User
@@ -157,14 +157,14 @@ def login(request):
     if user and user.is_active:
         django_login(request,user)
         list = get_jobs_for_user(request.user,readonly)
-        return HttpResponse(simplejson.dumps([dict(status = 200, jobs = list, readonly = readonly)]), content_type = 'application/javascript; charset=utf8')
+        return HttpResponse(simplejson.dumps([dict(status = 200, jobs = list, readonly = readonly)]), content_type = 'application/javascript')
     
-    return HttpResponse(simplejson.dumps([dict(status = 500)]), content_type = 'application/javascript; charset=utf8')
+    return HttpResponse(simplejson.dumps([dict(status = 500)]), content_type = 'application/javascript')
 
 @secure_required
 def logout(request):
     django_logout(request)
-    return HttpResponse(simplejson.dumps([dict(status = 200)]), content_type = 'application/javascript; charset=utf8')
+    return HttpResponse(simplejson.dumps([dict(status = 200)]), content_type = 'application/javascript')
             
 @secure_required
 def validate_username(request):
@@ -173,9 +173,9 @@ def validate_username(request):
     try:
         User.objects.get(username=username)
     except User.DoesNotExist:
-        return HttpResponse(simplejson.dumps([dict(status = 200)]), content_type = 'application/javascript; charset=utf8')
+        return HttpResponse(simplejson.dumps([dict(status = 200)]), content_type = 'application/javascript')
 
-    return HttpResponse(simplejson.dumps([dict(status = 500)]), content_type = 'application/javascript; charset=utf8')
+    return HttpResponse(simplejson.dumps([dict(status = 500)]), content_type = 'application/javascript')
  
 @secure_required
 def validate_hostname(request):
@@ -194,7 +194,7 @@ def validate_hostname(request):
     else:
         result = dict(status = 200)
     
-    return HttpResponse(simplejson.dumps([result]), content_type = 'application/javascript; charset=utf8')
+    return HttpResponse(simplejson.dumps([result]), content_type = 'application/javascript')
     
 @secure_required
 def validate_job(request):
@@ -203,22 +203,22 @@ def validate_job(request):
     
     if hostname.strip() == 'http://' or not jobname:
         result = dict(status = 500)
-        return HttpResponse(simplejson.dumps([result]), content_type = 'application/javascript; charset=utf8')
+        return HttpResponse(simplejson.dumps([result]), content_type = 'application/javascript')
         
     job = RetrieveJob(hostname,jobname)
     result = job.lookup_job(request.POST.get('username') != 'Username', request.POST.get('username'), request.POST.get('password1'))
     
     if result == urllib2.URLError:
         result = dict(status = 500)
-        return HttpResponse(simplejson.dumps([result]), content_type = 'application/javascript; charset=utf8')
+        return HttpResponse(simplejson.dumps([result]), content_type = 'application/javascript')
     elif result == ValueError:
         result = dict(status = 404)
-        return HttpResponse(simplejson.dumps([result]), content_type = 'application/javascript; charset=utf8')
+        return HttpResponse(simplejson.dumps([result]), content_type = 'application/javascript')
     elif result == 403: #autherization required
         result = dict(status = 403)
     elif result == 401: #invalid cerendtials
         result = dict(status = 401)
-        return HttpResponse(simplejson.dumps([result]), content_type = 'application/javascript; charset=utf8')
+        return HttpResponse(simplejson.dumps([result]), content_type = 'application/javascript')
     elif not result['status']:
             result['status'] = 'SUCCESS'
     else:
@@ -227,14 +227,14 @@ def validate_job(request):
     key = str('%s/%s' % (hostname, jobname))
     
     request.session[key] = result
-    return HttpResponse(simplejson.dumps([dict(status = 200)]), content_type = 'application/javascript; charset=utf8')
+    return HttpResponse(simplejson.dumps([dict(status = 200)]), content_type = 'application/javascript')
     
 @secure_required
 def retrieve_job(request):
     
     if not request.user.is_authenticated():
         result = [dict(status = 401)]
-        return HttpResponse(simplejson.dumps(result), content_type = 'application/javascript; charset=utf8')
+        return HttpResponse(simplejson.dumps(result), content_type = 'application/javascript')
     
     hostname = append_http(request.POST.get('hostname',''))
     jobname = request.POST.get('jobname',None)
@@ -242,20 +242,20 @@ def retrieve_job(request):
     
     if hostname.strip() == 'http://' or not jobname:
         result = [dict(status = 500)]
-        return HttpResponse(simplejson.dumps(result), content_type = 'application/javascript; charset=utf8')
+        return HttpResponse(simplejson.dumps(result), content_type = 'application/javascript')
     
     key = str('%s/%s' % (hostname, jobname))
     result = request.session[key]
     
     if not result:
         result = dict(status = 500)
-        return HttpResponse(simplejson.dumps([result]), content_type = 'application/javascript; charset=utf8')
+        return HttpResponse(simplejson.dumps([result]), content_type = 'application/javascript')
     
     #check to see if the user has already added the job
     user_ci_job = models.UserCiJob.objects.filter(entity_active=True, ci_job__jobname=jobname, user__username=request.user.username)
     if len(user_ci_job) > 0:
         result = dict(status = 100)
-        return HttpResponse(simplejson.dumps([result]), content_type = 'application/javascript; charset=utf8')
+        return HttpResponse(simplejson.dumps([result]), content_type = 'application/javascript')
     
     widget = dict(
          hostname = hostname,
@@ -270,28 +270,28 @@ def retrieve_job(request):
     user_ci_job = save_user_ci_job(**widget)
     result.update(dict(displayname = displayname, jobname = jobname, pk = user_ci_job.pk, icon = 'checkmark.png'))
         
-    return HttpResponse(simplejson.dumps([result]), content_type = 'application/javascript; charset=utf8')
+    return HttpResponse(simplejson.dumps([result]), content_type = 'application/javascript')
 
 
 @secure_required
 def save_jobs(request):
     if not request.user.is_authenticated():
         result = [dict(status = 401)]
-        return HttpResponse(simplejson.dumps(result), content_type = 'application/javascript; charset=utf8')
+        return HttpResponse(simplejson.dumps(result), content_type = 'application/javascript')
     
     user = request.user
     widgets = simplejson.loads(request.POST['widgets'])
     
     if not widgets:
         result = [dict(status = 500)]
-        return HttpResponse(simplejson.dumps(result), content_type = 'application/javascript; charset=utf8')
+        return HttpResponse(simplejson.dumps(result), content_type = 'application/javascript')
     
     for widget in widgets:
         widget['user'] = user.pk
         widget['entity_active'] = True
         save_user_ci_job(**widget)
     result = [dict(status = 200)]
-    return HttpResponse(simplejson.dumps(result), content_type = 'application/javascript; charset=utf8')
+    return HttpResponse(simplejson.dumps(result), content_type = 'application/javascript')
 
 @secure_required    
 def autocomplete_hostname(request):
@@ -299,7 +299,7 @@ def autocomplete_hostname(request):
     servers = models.CiServer.objects.filter(hostname__icontains=txt)
     result = [server.hostname for server in servers]
     #result = ['http://localhost:80%d' % i for i in range(5)]
-    return HttpResponse(simplejson.dumps(result), content_type = 'application/javascript; charset=utf8')
+    return HttpResponse(simplejson.dumps(result), content_type = 'application/javascript')
     
 
 @secure_required    
@@ -325,16 +325,16 @@ def signup(request):
         form.save()
         user = authenticate(username=request.POST.get('username'),password=request.POST.get('password1'))
         django_login(request, user)
-        return HttpResponse(simplejson.dumps([dict(status = 200)]), content_type = 'application/javascript; charset=utf8')
+        return HttpResponse(simplejson.dumps([dict(status = 200)]), content_type = 'application/javascript')
     else:
-        return HttpResponse(simplejson.dumps([dict(status = 500)]), content_type = 'application/javascript; charset=utf8')
+        return HttpResponse(simplejson.dumps([dict(status = 500)]), content_type = 'application/javascript')
     
 @secure_required    
 def remove_job(request):
     user_ci_job = models.UserCiJob.objects.get(pk=int(request.POST.get('pk')))
     user_ci_job.entity_active = False
     user_ci_job.save()
-    return HttpResponse(simplejson.dumps([dict(status = 200)]), content_type = 'application/javascript; charset=utf8')
+    return HttpResponse(simplejson.dumps([dict(status = 200)]), content_type = 'application/javascript')
 
 @secure_required
 def pull_jobs(request, *args, **kwargs):
@@ -363,7 +363,7 @@ def pull_jobs(request, *args, **kwargs):
                 job['status'] = result['status'] 
 
             
-        return HttpResponse(simplejson.dumps([dict(status = 200, jobs = list)]), content_type = 'application/javascript; charset=utf8')
+        return HttpResponse(simplejson.dumps([dict(status = 200, jobs = list)]), content_type = 'application/javascript')
 
 def edit_widget(request):
     if request.method == 'POST':

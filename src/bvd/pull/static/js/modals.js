@@ -32,7 +32,8 @@
 var BVD = BVD || {};
 
 BVD.modal_factory = function(url, id, opts) {
-    var $modal = $('<div id=\"'+id+'\"></div>').load(url).dialog(opts);
+    var $modal = $('<div id=\"'+id+'\"></div>').load(url).dialog(opts).height('auto');
+    
     return $modal;
 }
 

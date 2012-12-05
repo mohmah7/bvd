@@ -35,7 +35,6 @@ var Poll = function(url) {
 	
 	this.ajax = function() {
 		BVD.utils.do_ajax('get',url,{}, function(data) {
-    	    data = eval(data);
     	    BVD.utils.remove_old_widgets();
     	    BVD.utils.redraw_widgets(data);
     	});

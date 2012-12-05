@@ -55,7 +55,7 @@ BVD.login.validate_login_form = function() {
 }
 
 BVD.login.login_success = function(data,$modal) {
-	data = eval(data);
+	
 	if (data[0].status != 200) {
 		$("#loginerror").css('display','block');
 		$("#loginerror").html('Invalid login!');

@@ -39,9 +39,8 @@ BVD.utils.do_ajax = function (type, url, data, success, error) {
             url: url,
 	        type: type,
 	        data: data,
-	        headers: {
-	               "X-CSRFToken": $("input[name='csrfmiddlewaretoken']").val(),
-	        },
+	        dataType: 'json',
+	        headers: {"X-CSRFToken": $("input[name='csrfmiddlewaretoken']").val()},
 	        success: success,
 	        error: error
 	    });
@@ -55,7 +54,7 @@ BVD.utils.validate_email = function(email) {
 BVD.utils.save_widgets = function() {
 	var widgets = {};
 	var list = [];
-	for (hostname in BVD.widget_map) {
+	$.each(BVD.widget_map, function(hostname){
 		var $widgets = BVD.widget_map[hostname];
 		for (i=0; i < $widgets.length; i++) {
 			$widget = $widgets[i];
@@ -67,8 +66,10 @@ BVD.utils.save_widgets = function() {
     		data['icon'] = $widget.icon;
     		list.push(data);
 		}
-	}
-	widgets['widgets'] = JSON.stringify(list);
+	});
+		
+
+	widgets['widgets'] = $.toJSON(list);
 	BVD.utils.do_ajax('post','/pull/save_jobs/',widgets);
 }
 
@@ -99,10 +100,9 @@ BVD.utils.set_size_of_widgets = function(count) {
     
     var $prev_widget = $("<div></div>");
     var counter = 0;
-    var db_map = {};
     var db_list = [];
-    for (hostname in BVD.widget_map) {
-		$widgets = BVD.widget_map[hostname];
+    $.each(BVD.widget_map, function(hostname){
+    	$widgets = BVD.widget_map[hostname];
 		for (i=0; i < $widgets.length; i++) {
 		    if (counter == 0) {dimensions = {left : '0px', top: '0px'}}
 		    else {dimensions = $prev_widget.getWidgetDimensions();}
@@ -116,9 +116,8 @@ BVD.utils.set_size_of_widgets = function(count) {
 			$prev_widget = $current_widget;
 		    counter++;
 		}
-	}
-	
-	db_list.push(db_map);
+    });
+		
 	
 	return db_list;
 }

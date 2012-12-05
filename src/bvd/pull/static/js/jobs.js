@@ -34,7 +34,7 @@ BVD.jobs = {};
 
 
 BVD.jobs.add_job_success = function(data,$modal) {
-	data = eval(data);
+	
 	if (data[0].status != 100 && data[0].status != 500 && data[0].status != 401){
 		$("#hostname_err").css('display','none');
 			$("#hostname_err").html('Invalid URL');

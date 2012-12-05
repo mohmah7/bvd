@@ -36,7 +36,6 @@ var password_txt = ['txt_password1','txt_password2'];
 var call_ajax = ['hostname','jobname','username'];
 
 BVD.validate.blur_success = function(data,$this) {
-	data = eval(data);
 	
 	if (data[0].status == 200){
 		$("#" + $this.attr('id') + "_err").css('display','none');
@@ -45,7 +44,7 @@ BVD.validate.blur_success = function(data,$this) {
 		//make the username and password fields visible
 		$("#div_username").css('display','block');
 		$("#div_password").css('display','block');
-		$("#add_job_modal").dialog( "option", "height", 500);
+		$("#add_job_modal").dialog( "option", "height", 500).height('auto');
 		$("#username").focus();
 	}
 	else if (data[0].status == 401) {

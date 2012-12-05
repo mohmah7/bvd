@@ -11,7 +11,7 @@ $(function () {
         },
         done : function(e, data) {
         	BVD.utils.remove_old_widgets();
-    	    BVD.utils.redraw_widgets(eval(data.result));
+    	    BVD.utils.redraw_widgets(data.result);
     	    $("#edit_image").remove();
         },
         progressall: function (e, data) {
