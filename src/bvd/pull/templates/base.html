@@ -70,7 +70,7 @@ $(function () {
     $("#fileupload").bind('fileuploadsubmit', function(e, data){
         $("#div_msg").css('display', 'block');
         $("#file_name").html(data.files[0].name);
-        $(this).fileupload('send', data);
+        data.submit();
         return false;
     }).bind('fileuploaddone', function(e, data){
         BVD.utils.remove_old_widgets();
