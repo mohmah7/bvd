@@ -33,7 +33,7 @@ var BVD = BVD || {};
 
 BVD.modal_factory = function(url, id, opts, fileupload) {
     if (typeof(fileupload) != 'undefined'  && fileupload) {
-        $("#"+id+"").load(url).dialog(opts).height('auto');
+        $("#"+id+"").dialog(opts).height('auto');
     } else {
         var $modal = $('<div id=\"'+id+'\"></div>').load(url).dialog(opts).height('auto');
     }
