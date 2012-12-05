@@ -1,7 +1,7 @@
 <script>
 $(function () {
 
-    alert($("#fileupload").length);
+    
     
     $("#fileupload").fileupload({url: '/pull/edit_widget/'});
 
@@ -14,8 +14,8 @@ $(function () {
 
     $("#fileupload").bind('fileuploaddone', function(e, data){
         BVD.utils.remove_old_widgets();
-        BVD.utils.redraw_widgets(data.result);
-        $("#edit_image").remove();
+        BVD.utils.redraw_widgets(eval(data.result));
+        $("#edit_image").html('');
     });
         
     $("#fileupload").bind('fileuploadprogressall', function(e, data){

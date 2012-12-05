@@ -347,7 +347,7 @@ def pull_jobs(request, *args, **kwargs):
 
             if result == urllib2.HTTPError:
                 jenkins = RetrieveJob(job['hostname'],job['jobname'])
-                result = jenkins.lookup_job(True, settings.jenkins_user, settings.jenkins_pass)
+                result = jenkins.lookup_job(True, settings.JENKINS_USER, settings.JENKINS_PASS)
 
             
             if result == urllib2.URLError:
@@ -363,7 +363,7 @@ def pull_jobs(request, *args, **kwargs):
                 job['status'] = result['status'] 
 
             
-        return HttpResponse(simplejson.dumps([dict(status = 200, jobs = list)]), content_type = 'application/javascript')
+        return HttpResponse(simplejson.dumps([dict(status = 200, jobs = list)]), content_type = 'application/json')
 
 def edit_widget(request):
     if request.method == 'POST':
