@@ -79,7 +79,7 @@ $(function () {
         $("#div_msg").css('display','none');
         $("#progressbar").css('width', '0%');
         
-    }).bind('fileuploadprogressall', function(e, data){
+    }).bind('fileuploadprogress', function(e, data){
         var progress = parseInt(data.loaded / data.total * 100, 10);
             
         $('#progressbar').css(
