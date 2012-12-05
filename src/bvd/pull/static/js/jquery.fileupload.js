@@ -302,7 +302,7 @@
                 multipart = options.multipart || !$.support.xhrFileUpload,
                 paramName = options.paramName[0];
             options.headers = options.headers || {};
-            options.headers['X-CSRFToken'] = $("input[name='csrfmiddlewaretoken']").val();
+
             if (options.contentRange) {
                 options.headers['Content-Range'] = options.contentRange;
             }
@@ -373,6 +373,9 @@
             options.dataType = 'iframe ' + (options.dataType || '');
             // The iframe transport accepts a serialized array as form data:
             options.formData = this._getFormData(options);
+
+            options.headers['X-CSRFToken'] = $("input[name='csrfmiddlewaretoken']").val();
+            
             // Add redirect url to form data on cross-domain uploads:
             if (options.redirect && $('<a></a>').prop('href', options.url)
                     .prop('host') !== location.host) {
