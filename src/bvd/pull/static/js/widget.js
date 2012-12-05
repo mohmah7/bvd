@@ -222,7 +222,7 @@ var Widget = function(hostname, jobname, displayname, status, id, counter, reado
         		modal : true
     		}
     
-    		$modal = BVD.modal_factory(BVD.data.get_url('modal','?template=edit_image&widget_id='+self.pk), id, opts);
+    		$modal = BVD.modal_factory(BVD.data.get_url('modal','?template=edit_image&widget_id='+self.pk), id, opts, true);
     		return false;
 		});
 		
