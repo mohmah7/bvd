@@ -23,7 +23,7 @@ BVD reports on the various statuses of CI builds via colored widgets with icons 
     3) An unstable build      : Yellow Widget with Cloud icon
     4) A down host            : Grey Widget
 
-Insallation Requirements
+Installation Requirements
 ========================
 
 1) You should install pip (but is not required), which will simplify the installation of required libraries, which can be found in the requirements.txt in the project root directory
