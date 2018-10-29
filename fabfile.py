@@ -14,7 +14,7 @@ deploy_dir = '/opt/django/bvd'
 
 proj_dir = '%s/current/src/bvd' % deploy_dir
 
-host = 'webiken.net'
+host = 'google.com'
 
 git_clone = 'git clone https://github.com/webiken/bvd.git'
 
